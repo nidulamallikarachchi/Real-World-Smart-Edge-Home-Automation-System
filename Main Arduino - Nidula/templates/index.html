@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Control Arduino Devices</h1>
+    <div>
+        <h2>Main Arduino</h2>
+        <button class="button" id="toggleButtonMain" onclick="toggleDevice('main')">Turn On</button>
+    </div>
+    <div>
+        <h2>Sub Arduino 1</h2>
+        <button class="button" id="toggleButtonSub1" onclick="toggleDevice('sub1')">Turn On</button>
+    </div>
+    <div>
+        <h2>Sub Arduino 2</h2>
+        <button class="button" id="toggleButtonSub2" onclick="toggleDevice('sub2')">Turn On</button>
+    </div>
+
+    <script>
+        let states = {main: false, sub1: false, sub2: false};
+
+        function toggleDevice(device) {
+            states[device] = !states[device];
+            const button = document.getElementById(`toggleButton${device.charAt(0).toUpperCase() + device.slice(1)}`);
+            button.textContent = states[device] ? 'Turn Off' : 'Turn On';
+
+            fetch(`/toggle_${device}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ state: states[device] }),
+            });
+        }
+    </script>
+</body>
+</html>
